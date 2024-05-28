@@ -274,10 +274,6 @@ class AbstractMLForecastModel(AbstractTimeSeriesModel):
         if static_features is not None:
             df = pd.merge(df, static_features, how="left", on=ITEMID, suffixes=(None, "_static_feat"))
 
-        for col in self._non_boolean_real_covariates:
-            # Normalize non-boolean features using mean_abs scaling
-            df[f"__scaled_{col}"] = df[col] / df[col].abs().groupby(df[ITEMID]).mean().reindex(df[ITEMID]).values
-
         # Convert float64 to float32 to reduce memory usage
         float64_cols = list(df.select_dtypes(include="float64"))
         df[float64_cols] = df[float64_cols].astype("float32")
